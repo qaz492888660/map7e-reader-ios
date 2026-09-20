@@ -1,5 +1,5 @@
 {
-  "name": "map7e-spatial",
+  "name": "map7e-reader-ios",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test:ui": "npm run build && node scripts/check-ui.cjs && node scripts/check-import.cjs && node scripts/check-pagination.cjs"
+    "test:ui": "npm run build && node scripts/check-ui.cjs && node scripts/check-import.cjs && node scripts/check-pagination.cjs",
+    "ios:sync": "npm run build && npx cap sync ios"
   },
   "dependencies": {
     "react": "^18.3.1",
