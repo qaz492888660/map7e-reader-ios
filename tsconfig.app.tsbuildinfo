@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/bookcard.tsx","./src/components/focusreader.tsx","./src/components/shelfrow.tsx","./src/components/shelfwall.tsx","./src/data/mocklibrary.ts","./src/hooks/usebookopen.ts","./src/hooks/useshelfphysics.ts"],"version":"5.6.3"}

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>MAP7E Reader · 布局验收</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #dfe7e9;
+        color: #334e57;
+        font:
+          14px system-ui,
+          sans-serif;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 12px;
+        flex-wrap: wrap;
+      }
+      select,
+      button {
+        min-height: 44px;
+        font: inherit;
+        padding: 8px 12px;
+        border: 1px solid #9aacae;
+        border-radius: 8px;
+        background: #fff;
+      }
+      #status {
+        text-align: center;
+        margin: 4px 0 14px;
+      }
+      iframe {
+        display: block;
+        border: 0;
+        margin: 0 auto 24px;
+        background: #fff;
+        box-shadow: 0 8px 40px #334e5733;
+      }
+      .hint {
+        text-align: center;
+        margin: 12px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <strong>MAP7E · 浏览器布局验收</strong>
+      <label
+        >宽度
+        <select id="width">
+          <option>360</option>
+          <option>375</option>
+          <option selected>390</option>
+          <option>430</option>
+          <option>768</option>
+          <option>1280</option>
+        </select></label
+      >
+      <label
+        >页面
+        <select id="page">
+          <option value="home">首页</option>
+          <option value="library">书库</option>
+          <option value="book/general-psychology-6">书籍详情</option>
+          <option value="reader/general-psychology-6">阅读页</option>
+          <option value="settings">设置</option>
+          <option value="history">记录</option>
+        </select></label
+      >
+      <button id="inspect">检查横向溢出</button>
+    </header>
+    <p id="status" role="status">等待页面加载</p>
+    <iframe
+      title="手机页面预览"
+      src="./#/home"
+      width="390"
+      height="844"
+    ></iframe>
+    <p class="hint">
+      真实 iframe 布局；不是 iPhone 模拟器。安全区、Safari
+      地址栏、触屏惯性与帧率需要真机验收。
+    </p>
+    <script>
+      const frame = document.querySelector('iframe')
+      const width = document.querySelector('#width')
+      const page = document.querySelector('#page')
+      const status = document.querySelector('#status')
+      function inspect() {
+        try {
+          const doc = frame.contentDocument
+          const viewport = doc.documentElement.clientWidth
+          const content = Math.max(
+            doc.documentElement.scrollWidth,
+            doc.body.scrollWidth,
+          )
+          status.textContent = `${frame.contentWindow.innerWidth}px 窗口 · ${viewport}px 可用宽度 · ${content}px 内容 · ${content <= viewport ? '无页面横向溢出' : '存在页面横向溢出'}`
+        } catch {
+          status.textContent = '尚无法读取页面，请在加载后重新检查。'
+        }
+      }
+      width.addEventListener('change', () => {
+        frame.width = width.value
+        requestAnimationFrame(inspect)
+      })
+      page.addEventListener('change', () => {
+        frame.src = './#/' + page.value
+        status.textContent = '切换后可点击检查横向溢出'
+      })
+      frame.addEventListener('load', () => setTimeout(inspect, 300))
+      document.querySelector('#inspect').addEventListener('click', inspect)
+    </script>
+  </body>
+</html>
