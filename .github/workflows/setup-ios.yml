@@ -1,0 +1,55 @@
+name: Prepare Capacitor iOS project
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    if: github.event.head_commit.message == 'Prepare iOS setup'
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install existing dependencies
+        run: npm ci
+
+      - name: Install Capacitor 8
+        run: |
+          npm install @capacitor/core@^8 @capacitor/ios@^8
+          npm install --save-dev @capacitor/cli@^8
+
+      - name: Build web app
+        run: npm run build
+
+      - name: Create iOS project
+        run: |
+          npx cap add ios
+          npx cap sync ios
+
+      - name: Remove one-time setup workflow
+        run: |
+          rm -f .github/workflows/setup-ios.yml
+          rmdir .github/workflows 2>/dev/null || true
+          rmdir .github 2>/dev/null || true
+
+      - name: Commit iOS project
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Add Capacitor iOS project"
+          git push origin main
